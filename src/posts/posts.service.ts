@@ -1,4 +1,4 @@
-import { Injectable } from '@nestjs/common';
+import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
 import { PostModule } from './posts.modules';
@@ -46,14 +46,67 @@ export class PostsService {
     private readonly postsRepository: Repository<PostModel>
   ) { }
   async getAllPosts() {
-    this.postsRepository.find();
+    return await this.postsRepository.find();
   }
   async getPostById(id: number) {
-    return this.postsRepository.findOne({
+    const post = await this.postsRepository.findOne({
       where: {
         id,
       },
     });
+    if (!post) {
+      throw new NotFoundException();
+    }
+    return post;
   }
-  
+  async createPost(author: string, title: string, content: string) {
+    const post = this.postsRepository.create({
+      author,
+      title,
+      content,
+      likeCount: 0,
+      commentCount: 0,
+    });
+    const newPost = await this.postsRepository.save(post);
+    return newPost;
+  }
+  async updatePost(postId: number, author: string, title: string, content: string) {
+    // save 기능
+    // 1) 만약에 데터 존하 않ㅡ다면, (id 기준으로) 새로 생성한다.
+    // 2) 만약에 데이터가 존재한다면, (같은 id값이 존재 한다면) 존재하던 값을 업데이트한다.
+    const post = await this.postsRepository.findOne({
+      where: {
+        id: postId,
+      }
+    });
+    // const psot = posts.find(post => post.id === postId);
+    if (!post) {
+      throw new NotFoundException();
+    }
+    if (author) {
+      post.author = author;
+    }
+    if (title) {
+      post.title = title;
+    }
+    if (content) {
+      post.content = content;
+    }
+
+    const newPost = await this.postsRepository.save(post);
+
+    return newPost;
+  }
+  async deletePost(postId: number) {
+    const post = await this.postsRepository.findOne({
+      where: {
+        id: postId,
+      }
+    })
+
+    if (!post) {
+      throw new NotFoundException();
+    }
+    await this.postsRepository.delete(postId);
+  }
 }
