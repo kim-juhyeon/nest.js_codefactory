@@ -4,6 +4,7 @@ import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
 import { PostsModel } from './posts/entities/posts.entity';
 import { UsersModule } from './users/users.module';
+import { UsersModel } from './users/entities/users.entity';
 
 @Module({
   imports: [
@@ -16,7 +17,7 @@ import { UsersModule } from './users/users.module';
       database: 'postgres',
       entities: [
         PostsModel,
-        UsersModule,
+        UsersModel,
       ],
       synchronize: true,
     }),
