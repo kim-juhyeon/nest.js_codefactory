@@ -1,5 +1,7 @@
-import { Column,Entity,PrimaryGeneratedColumn } from "typeorm";
+import { Column,Entity,OneToMany,PrimaryGeneratedColumn } from "typeorm";
 import { RolesEnum } from "../const/roles.const";
+import { PostModule } from "src/posts/posts.modules";
+import { PostsModel } from "src/posts/entities/posts.entity";
 
 @Entity()
 export class UsersModel {
@@ -29,4 +31,7 @@ export class UsersModel {
         default: RolesEnum.USER   //기본값을 user로 갖는다.
     })
     role: RolesEnum;
+    
+    @OneToMany(() => PostsModel, (post) => post.author)
+    posts: PostModule[];
 }
