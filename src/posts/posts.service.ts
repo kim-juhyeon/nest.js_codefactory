@@ -1,7 +1,8 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
 import { Repository } from 'typeorm';
-import { PostModule } from './posts.modules';
+import { PostModule } from './posts.module';
+
 
 interface PostModel{
     id : number;
