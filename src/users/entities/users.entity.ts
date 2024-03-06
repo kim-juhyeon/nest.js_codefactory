@@ -1,7 +1,7 @@
 import { Column,Entity,OneToMany,PrimaryGeneratedColumn } from "typeorm";
 import { RolesEnum } from "../const/roles.const";
-import { PostModule } from "src/posts/posts.modules";
-import { PostsModel } from "src/posts/entities/posts.entity";
+import { PostModule } from "src/posts1/posts.modules";
+import { PostsModel } from "src/posts1/entities/posts.entity";
 
 @Entity()
 export class UsersModel {
