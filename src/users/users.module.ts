@@ -8,6 +8,7 @@ import { UsersModel } from './entities/users.entity';
   imports: [
     TypeOrmModule.forFeature([UsersModel]),
   ],
+  exports:[UsersService], //export는 내보내기이고, 해당 UsersModule에서 userService를 내보내기 해줍니다.
   controllers: [UsersController],
   providers: [UsersService],
 })
