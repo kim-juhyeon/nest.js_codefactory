@@ -37,6 +37,63 @@ export class AuthService {
      *      새로운 토큰을 발급받고 새로운 토큰을 사용해서 private route에 접근한다.
      */
 
+    /**
+     * Header로 부터 토큰을 받을때
+     * 
+     * {authorization : 'Basic {token}'}
+     * {authorization : 'Bearer {token}'}
+     */
+
+    extractTokenFromHeader(header: string, isBearer: boolean) {
+        const splitToken = header.split('') //리스트로 값을 나눕니다.
+
+        const prefix = isBearer ? 'Bearer' : 'Basic' //검증로직
+        if (splitToken.length !== 2 || splitToken[0] !== prefix) {
+            throw new UnauthorizedException('잘못된 토큰입니다!.');
+        }
+
+        const token = splitToken[1];
+        
+        return token;
+    }
+    /**
+     * Basic sadflkjwelfj21qldk
+     * 
+     * 1) sadflkjwelfj21qldk -> email:password
+     * 2) email:password -> [email, password]
+     * 3) {email: email, password: password}
+     */
+    decodeBasicToken(base64String: string) {
+        const decoded = Buffer.from(base64String, 'base64').toString('utf8'); //email:password 형태로 변경됨
+
+        const split = decoded.split(':');
+
+        if (split.length !== 2) {
+            throw new UnauthorizedException('잘못된 유형의 토큰입니다.!');
+        }
+        const email = split[0];
+        const password = split[1];
+
+        return {
+            email,
+            password,
+        }
+    }
+
+    /**
+     * 토큰검증
+     */
+    verifyToken(token: string) {
+        return this.jwtService.verify(token, {
+            secret: JWT_SECRET,
+        });
+    }
+
+    ratateToken(token: string, isRefreshToken: boolean) {
+        const decoded = this.jwtService.verify(token, {
+            secret: JWT_SECRET,
+        });
+    }
 
 
     /**
