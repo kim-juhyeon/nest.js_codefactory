@@ -93,6 +93,14 @@ export class AuthService {
         const decoded = this.jwtService.verify(token, {
             secret: JWT_SECRET,
         });
+
+        if (decoded.type !== 'refresh') {
+            throw new UnauthorizedException('토큰 재ㄹ급은 Refresh 토큰으로만 가능합니다!');
+        }
+
+        return this.signToken({
+            ...decoded,
+        }, isRefreshToken);
     }
 
 

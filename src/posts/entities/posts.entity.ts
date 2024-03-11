@@ -1,5 +1,5 @@
 import { UsersModel } from "src/users/entities/users.entity";
-import { Column, Entity, ManyToOne, PrimaryGeneratedColumn } from "typeorm";
+import { Column, Entity, ManyToOne, PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 
 @Entity()
 export class PostsModel {
@@ -24,4 +24,11 @@ export class PostsModel {
 
     @Column()
     commentCount: number;
+
+    @UpdateDateColumn()
+    updatedAt: Date;
+
+
+    @UpdateDateColumn()
+    createdAt: Date;
 }

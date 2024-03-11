@@ -1,7 +1,7 @@
-import { Column,Entity,OneToMany,PrimaryGeneratedColumn } from "typeorm";
+import { Column,CreateDateColumn,Entity,OneToMany,PrimaryGeneratedColumn, UpdateDateColumn } from "typeorm";
 import { RolesEnum } from "../const/roles.const";
-import { PostModule } from "src/posts1/posts.modules";
-import { PostsModel } from "src/posts1/entities/posts.entity";
+import { PostsModel } from "src/posts/entities/posts.entity";
+import { PostModule } from "src/posts/posts.module";
 
 @Entity()
 export class UsersModel {
@@ -33,5 +33,10 @@ export class UsersModel {
     role: RolesEnum;
     
     @OneToMany(() => PostsModel, (post) => post.author)
-    posts: PostModule[];
+    posts: PostsModel[];
+
+    @UpdateDateColumn() //자동으로 업데이트 될 때마다 날짜를 알 수 있음
+    updateAt: Date;
+    @CreateDateColumn()
+    createdAt: Date;
 }
