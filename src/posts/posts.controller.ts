@@ -1,4 +1,4 @@
-import { Body, Controller, Delete, Get, NotFoundException, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, DefaultValuePipe, Delete, Get, NotFoundException, Param, ParseIntPipe, Post, Put } from '@nestjs/common';
 import { PostsService } from './posts.service';
 
 
@@ -16,8 +16,8 @@ export class PostsController {
   }
 
   @Get(':id')
-  getPost(@Param('id') id: string){
-    return this.postsService.getPostById(+id);
+  getPost(@Param('id',ParseIntPipe) id: number){  //pipe를 사용하면, 원하는 값을 강제로 입력하게 하고, 검증을 하게 합니다.
+    return this.postsService.getPostById(id);
   }
 
   // 3) POST /posts
