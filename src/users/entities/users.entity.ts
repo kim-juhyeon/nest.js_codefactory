@@ -2,11 +2,11 @@ import { Column,CreateDateColumn,Entity,OneToMany,PrimaryGeneratedColumn, Update
 import { RolesEnum } from "../const/roles.const";
 import { PostsModel } from "src/posts/entities/posts.entity";
 import { PostModule } from "src/posts/posts.module";
+import { BaseModel } from "src/common/entity/base.entity";
 
 @Entity()
-export class UsersModel {
-    @PrimaryGeneratedColumn() //Postmodel의 number가 있는데 독립적으로 카운팅됩니다.
-    id: number;
+export class UsersModel extends BaseModel{
+
 
     @Column({
         // 1)
@@ -35,8 +35,4 @@ export class UsersModel {
     @OneToMany(() => PostsModel, (post) => post.author)
     posts: PostsModel[];
 
-    @UpdateDateColumn() //자동으로 업데이트 될 때마다 날짜를 알 수 있음
-    updateAt: Date;
-    @CreateDateColumn()
-    createdAt: Date;
 }
