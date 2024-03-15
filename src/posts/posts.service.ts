@@ -62,7 +62,7 @@ export class PostsService {
       throw new NotFoundException();
     }
     return post;
-  }
+  }//필수
   async createPost(authorId: number, title: string, content: string) {
     const post = this.postsRepository.create({
       author: {
