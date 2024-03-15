@@ -84,9 +84,15 @@ export class AuthService {
      * 토큰검증
      */
     verifyToken(token: string) {
-        return this.jwtService.verify(token, {
+        try {
+            return this.jwtService.verify(token, {
             secret: JWT_SECRET,
         });
+            
+        } catch (e) {
+            throw new UnauthorizedException('토큰이 만료되었거나, 잘못된 토큰입니다.')
+        }
+        
     }
 
     ratateToken(token: string, isRefreshToken: boolean) {
