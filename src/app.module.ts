@@ -1,4 +1,4 @@
-import { Module } from '@nestjs/common';
+import { ClassSerializerInterceptor, Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
@@ -7,6 +7,7 @@ import { UsersModel } from './users/entities/users.entity';
 import { AuthModule } from './auth/auth.module';
 import { CommonModule } from './common/common.module';
 import { PostsModel } from './posts/entities/posts.entity';
+import { APP_INTERCEPTOR } from '@nestjs/core';
 
 @Module({
   imports: [
@@ -28,6 +29,9 @@ import { PostsModel } from './posts/entities/posts.entity';
     CommonModule,
   ],
   controllers: [AppController],
-  providers: [AppService],
+  providers: [AppService, { //exclue 가 적용된 데이터를 전역으로 관리할 수 있습니다.
+    provide: APP_INTERCEPTOR,
+    useClass: ClassSerializerInterceptor,
+  }],
 })
 export class AppModule {}
