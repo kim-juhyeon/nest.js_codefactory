@@ -1,8 +1,9 @@
-import { Body, Controller, DefaultValuePipe, Delete, Get, NotFoundException, Param, ParseIntPipe, Post, Put, UseGuard, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, DefaultValuePipe, Delete, Get, NotFoundException, Param, ParseIntPipe, Post, Put, UseGuard, Request, UseGuards, Patch } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { AccessTokenGuard } from 'src/auth/guard/bearer-token.guard';
-import { UsersModel } from 'src/users/entities/users.entity';
 import { User } from 'src/users/decorator/user.decorator';
+import { createPostDto } from './dto/create-post.dto';
+import { UpdatePostDto } from './dto/update-post.dto';
 
 
 
@@ -25,30 +26,34 @@ export class PostsController {
 
   // 3) POST /posts
   // POST를 생성한다.
+
+  // DTO - Data Transfer Object
   @Post()
   @UseGuards(AccessTokenGuard) //가드를 이용해서 통과한 id 값을 가져옵니다. = authorId
   postPosts(
     // @Request() req:any,
     @User('id') userId: number,
-    @Body('title') title: string,
-    @Body('content') content: string,
+    @Body() body: createPostDto,
+    // @Body('title') title: string,
+    // @Body('content') content: string,
   ) {
     return this.postsService.createPost(
-      userId, title, content,
+      userId, body,
     );
   }
 
-  // 4) Put /posts/:id
+  // 4) PATCH /posts/:id
   // id에 해당되는 Post를 변경한다.
 
-  @Put(':id')
-  putPost(
-    @Param('id') id: string,
-    @Body('title') title? : string,
-    @Body('content') content? : string,
+  @Patch(':id')
+  patchPost(
+    @Param('id', ParseIntPipe) id: string,
+    @Body() body: UpdatePostDto
+    // @Body('title') title? : string,
+    // @Body('content') content? : string,
   ){
     return this.postsService.updatePost(
-     +id, title, content,
+     +id, body,
    )
   }
 

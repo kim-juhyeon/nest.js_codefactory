@@ -5,12 +5,14 @@ import { PostsController } from "./posts.controller";
 import { PostsService } from "./posts.service";
 import { UsersModel } from "src/users/entities/users.entity";
 import { UsersModule } from "src/users/users.module";
+import { AuthModule } from "src/auth/auth.module";
 
 @Module({
     imports: [
         TypeOrmModule.forFeature([
             PostsModel,
         ]),
+        AuthModule,
         UsersModule,
     ],
     controllers: [PostsController],
