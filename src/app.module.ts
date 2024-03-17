@@ -2,12 +2,11 @@ import { Module } from '@nestjs/common';
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { TypeOrmModule } from '@nestjs/typeorm';
-import { PostsModel } from './posts1/entities/posts.entity';
 import { UsersModule } from './users/users.module';
 import { UsersModel } from './users/entities/users.entity';
 import { AuthModule } from './auth/auth.module';
-import { PostsModule } from './posts/posts.module';
 import { CommonModule } from './common/common.module';
+import { PostsModel } from './posts/entities/posts.entity';
 
 @Module({
   imports: [
@@ -26,7 +25,6 @@ import { CommonModule } from './common/common.module';
     }),
     UsersModule,
     AuthModule,
-    PostsModule,
     CommonModule,
   ],
   controllers: [AppController],
