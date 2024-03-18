@@ -1,12 +1,14 @@
 import { Injectable, NotFoundException } from '@nestjs/common';
 import { InjectRepository } from '@nestjs/typeorm';
-import { Repository } from 'typeorm';
+import { MoreThan, Repository } from 'typeorm';
 import { PostModule } from './posts.module';
 import { createPostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
+import {paginatePostsDto } from './dto/paginate-post.dto';
+import { HOST, PROTOCOL } from 'src/common/const/env.const';
 
 
-interface PostModel{
+export interface PostModel{
     id : number;
     author : String;
     title : String;
@@ -53,8 +55,66 @@ export class PostsService {
      relations:['author']
     });
   }
-  paginatePosts() {
+
+  async generatePosts() {
     
+  }
+
+
+  //오름차 순으로 정렬하는 pagination만 구현한다.
+  async paginatePosts(dto: paginatePostsDto) {
+    // 1,2,3,4,5
+    const posts = await this.postsRepository.find({
+      where: {
+        id : MoreThan(dto.where__id_more_than), //더 크게
+      },
+      //order__createdAt
+      order:{
+        createdAt: dto.order__createdAt,
+      },
+      take: dto.take,
+    });
+
+    //해당되는 포스트가 0개 이상이면
+    // 마지막 포스트를 가져오고
+    // 아니면 Null을 반환한다.
+    const lastItem = posts.length > 0 && posts.length === dto.take ? posts[posts.length - 1] : null;
+
+    const nextUrl = lastItem && new URL(`${PROTOCOL}:http://${HOST}/posts`);
+    if (nextUrl) {
+      /**
+       * dto의 키값들을 루핑하면서
+       * 키값에 해당되는 벨류가 존재하면
+       * param에 그대로 붙여넣는다.
+       * 
+       * 단, where__id_more_than 값만 lasteItem의 마지막 값으로 넣어준다.
+       */
+      for (const key of Object.keys(dto)) {
+        if (dto[key]){
+          if (key !== 'where__id_more_than') {
+            nextUrl.searchParams.append(key, dto[key]);
+          } 
+        }
+      }
+      nextUrl.searchParams.append('where__id_more_than', lastItem.id.toString());
+    }
+    /**
+     * Response
+     * data : Date[],
+     * cursor : {
+     *   after: 마지막 Data의 ID
+     * },
+     * count : 응답한 데이터의 갯수
+     * next : 다음 요청을 할때 사용할 URL
+     */
+    return {
+      data: posts,
+      cursor: {
+        after: lastItem.id ?? null,
+      },
+      count: posts.length,
+      next : nextUrl?.toString(),
+    }
   }
 
   async getPostById(id: number) {
