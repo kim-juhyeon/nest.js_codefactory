@@ -1,11 +1,11 @@
-import { Body, Controller, DefaultValuePipe, Delete, Get, NotFoundException, Param, ParseIntPipe, Post, Put, UseGuard, Request, UseGuards, Patch, Query } from '@nestjs/common';
+import { Body, Controller, DefaultValuePipe, Delete, Get, NotFoundException, Param, ParseIntPipe, Post, Put, Request, UseGuards, Patch, Query } from '@nestjs/common';
 import { PostsService } from './posts.service';
 import { AccessTokenGuard } from 'src/auth/guard/bearer-token.guard';
 import { User } from 'src/users/decorator/user.decorator';
 import { createPostDto } from './dto/create-post.dto';
 import { UpdatePostDto } from './dto/update-post.dto';
-import { paginatePosts } from './dto/paginate-post.dto';
 import { query } from 'express';
+import { paginatePostsDto } from './dto/paginate-post.dto';
 
 
 
@@ -18,9 +18,9 @@ export class PostsController {
   // 예를 들어서 id=1일 경우 id가 1인 포스트를 가져온다.
   @Get()
   getPosts(
-    @Query() query: paginatePosts
+    @Query() query: paginatePostsDto,
   ) {
-    return this.postsService.getAllPosts();
+    return this.postsService.paginatePosts(query);
   }
 
   @Get(':id')
