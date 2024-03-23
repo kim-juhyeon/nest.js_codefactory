@@ -79,7 +79,7 @@ export class PostsService {
       //order__createdAt
       order:{
         createdAt: dto.order__createdAt,
-      },
+      }, //오류
       take: dto.take,
     });
 
